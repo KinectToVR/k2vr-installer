@@ -1,0 +1,23 @@
+k2vr auto installer for dumb people:
+
+kinect sdk direct dl
+https://download.microsoft.com/download/E/1/D/E1DEC243-0389-4A23-87BF-F47DE869FC1A/KinectSDK-v1.8-Setup.exe
+
+ovrie direct dl
+https://github.com/matzman666/OpenVR-InputEmulator/releases/download/v1.3/OpenVR-InputEmulator-v1.3.exe
+silent flag: /S (yes, capital S)
+
+ovrie dll fix
+https://github.com/sharkyh20/OpenVR-InputEmulator/releases/download/SteamVR-Fix/driver_00vrinputemulator.dll
+
+ovrie dll folder
+C:\Program Files (x86)\Steam\steamapps\common\SteamVR\drivers\00vrinputemulator\bin\win64
+
+vc redist c++ 2010 x64 direct dl
+https://download.microsoft.com/download/3/2/2/3224B87F-CFA0-4E70-BDA3-3DE650EFEBA5/vcredist_x64.exe
+silent flag: /q /norestart
+
+vc redist c++ 2017 x64 direct dl
+https://download.visualstudio.microsoft.com/download/pr/11100230/15ccb3f02745c7b206ad10373cbca89b/VC_redist.x64.exe
+silent flag: /install /quiet /norestart
+
