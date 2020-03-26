@@ -93,6 +93,9 @@ if (!(Test-Path .\temp)){
 Start-Sleep -s 1
 # downloading things... TODO: verify downloads and add alternate mirrors
 
+# before we start, set PS to allow any type of TLS, older versions only allow 1.0 by default
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 # download 7zip cli zip
 if (!(Test-Path .\temp\7zip\)){
     echo "Downloading 7-Zip CLI"
