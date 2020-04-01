@@ -25,7 +25,8 @@ Start-Sleep -s 0.8
 $HMDIndex = "rift-cv1","rift-s","quest","index","vive","vive-pro","vive-cosmos","windows-mr","quest-alvr","quest-vd","pimax","other"
 $HMDIndexReadable = "Oculus Rift CV1","Oculus Rift S","Oculus Quest","Valve Index","HTC Vive","HTC Vive Pro","HTC Vive Cosmos","Windows Mixed Reality","Oculus Quest (ALVR)","Oculus Quest (VirtualDesktop)","Pimax","Other/Unknown"
 $HMDStatus = 0
-$SteamVRSettings = Get-Content -Path "C:\Program Files (x86)\Steam\config\steamvr.vrsettings" -Raw
+$SteamDIR = (Get-Item HKCU:\Software\Valve\Steam).GetValue("SteamPath")
+$SteamVRSettings = Get-Content -Path "$SteamDIR\config\steamvr.vrsettings" -Raw
 $NewSteamVRSettings
 $SteamVRSettingsJSON = $SteamVRSettings | ConvertFrom-Json
 
@@ -71,17 +72,7 @@ if (Get-PnpDevice -ErrorAction 'Ignore' -PresentOnly -FriendlyName 'Kinect for W
     exit
 }
 Start-Sleep -s 0.7
-# weird config alert
-# if($KinectStatus = 1){
-#     if($HMDStatus = 1){
-#         $wshell = New-Object -ComObject Wscript.Shell
-#         $wshell.Popup("It seems you're using Xbox One Kinect with a Rift S.  There can be some complications related to USB 3.0...  If you run into issues, join discord.gg/Mu28W4N", 0, "KinectToVR Installer",48)
-#     }
-#     elseif(($HMDStatus = 3) -or ($HMDStatus = 4) -or ($HMDStatus = 5)){
-#         $wshell = New-Object -ComObject Wscript.Shell
-#         $wshell.Popup("It seems you're using Xbox One Kinect with $HMDReadable.  Lighthouse-based tracking will stop working if a Kinect V2 is pointed into a base station.  Make sure that isn't the case.  If you run into issues, join discord.gg/Mu28W4N", 0, "KinectToVR Installer",48)
-#     }
-# }
+
 # make new folder
 $CurrentPath = Get-Location
 if (!(Test-Path .\temp)){
@@ -160,7 +151,7 @@ if ($KinectDriverStatus = 0){
     echo "Kinect drivers are already installed, skipping download"
 }
 Start-Sleep -s 2
-# INSTALLING SHIT FOR REALS
+# INSTALLING FOR REALS
 if (!(Test-Path C:\KinectToVR\)){
     echo "Extracting K2VR to the C drive (C:\KinectToVR)"
     .\temp\7zip\7za.exe x .\temp\k2vr-0.6.0r2.7z -aoa -oC:\ | Out-Null
@@ -183,7 +174,7 @@ if (!(Test-Path "C:\Program Files\OpenVR-InputEmulator\")){
 }
 Start-Sleep -s 0.6
 echo "Copying the SteamVR DLL Fix to the right folder"
-Copy-Item -Force .\temp\driver_00vrinputemulator.dll -Destination "C:\Program Files (x86)\Steam\steamapps\common\SteamVR\drivers\00vrinputemulator\bin\win64"
+Copy-Item -Force .\temp\driver_00vrinputemulator.dll -Destination "$SteamDIR\steamapps\common\SteamVR\drivers\00vrinputemulator\bin\win64"
 Start-Sleep -s 0.8
 if (($KinectStatus = 0) -and ($KinectDriverStatus = 0)){
     echo "Running Kinect SDK 1.8 Installer for Xbox 360 Kinect"
@@ -201,24 +192,28 @@ Start-Sleep -s 2
 echo "Creating Start Menu entry for KinectToVR..."
 echo "Downloading icon into the K2VR folder"
 Invoke-WebRequest https://github.com/TripingPC/k2vr-installer/raw/master/k2vr.ico -OutFile C:\KinectToVR\k2vr.ico
-if ($KinectStatus = 0){
-    Invoke-WebRequest https://github.com/TripingPC/k2vr-installer/raw/master/KinectToVR-V1.lnk -OutFile "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\KinectToVR.lnk"
-    echo "Created Start Menu entry for kinectv1process.exe!"
-}elseif ($KinectStatus = 1){
-    Invoke-WebRequest https://github.com/TripingPC/k2vr-installer/raw/master/KinectToVR-V2.lnk -OutFile "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\KinectToVR.lnk"
-    echo "Created Start Menu entry for kinectv2process.exe!"
-}
+New-Item -ItemType directory -Path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\KinectToVR"
+Invoke-WebRequest https://github.com/TripingPC/k2vr-installer/raw/master/KinectToVR-V1.lnk -OutFile "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\KinectToVR\KinectToVR (Xbox 360).lnk"
+echo "Created Start Menu entry for kinectv1process.exe!"
+Invoke-WebRequest https://github.com/TripingPC/k2vr-installer/raw/master/KinectToVR-V2.lnk -OutFile "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\KinectToVR\KinectToVR (Xbox One).lnk"
+echo "Created Start Menu entry for kinectv2process.exe!"
 Start-Sleep -s 1
-# TODO:
-# force enable openvr input emu driver
+# force enable openvr input emu driver by abusing the steamvr settings file
+
+# btw thanks valve for whatever JSON interpreter you use
+# it literally cleans up and consolidates duplicate entries :D
+# because PS' wrapper around Newtonsoft doesn't allow to change the tab length
+# making this string replace hack kind of the only slightly sane method
 echo "Force-enabling OpenVR-InputEmulator"
 Start-Sleep -s 0.4
 $NewSteamVRSettings = $SteamVRSettings.Replace(
 "`"steamvr`" : {",
 "`"driver_00vrinputemulator`" : {`n      `"blocked_by_safe_mode`" : false`n   },`n   `"steamvr`" : {")
 echo "Safe mode blocked successfully!"
-Set-Content -Path "C:\Program Files (x86)\Steam\config\steamvr.vrsettings" -Value $NewSteamVRSettings
+Set-Content -Path "$SteamDIR\config\steamvr.vrsettings" -Value $NewSteamVRSettings
 Start-Sleep -s 0.7
 echo "Saved to SteamVR settings"
+
+# script end
 $wshell = New-Object -ComObject Wscript.Shell
 $wshell.Popup("Installation completed! If you need more help, read the instructions on the website or join discord.gg/Mu28W4N", 0, "KinectToVR Installer",48)
