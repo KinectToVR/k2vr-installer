@@ -52,9 +52,7 @@ Start-Sleep -s 0.7
 
 # figure out what kinect model is plugged in and if it has drivers
 $KinectStatus = 0 # 0 = 360 1 = one
-$KinectDriverStatus = 0 # 0 = no drivers 1 = drivers for v1 2 = drivers for v2
-if (Test-Path "C:\Windows\System32\Kinect10.dll") {$KinectDriverStatus = 1}
-if (Test-Path "C:\Windows\System32\Kinect20.dll") {$KinectDriverStatus = 2}
+$KinectDriverInstall = 0
 
 echo "Checking for Kinect model..."
 if (Get-PnpDevice -ErrorAction 'Ignore' -PresentOnly -FriendlyName 'Kinect for Windows Device'){
@@ -146,14 +144,14 @@ if (!(Test-Path .\temp\driver_00vrinputemulator.dll)){
 }
 Start-Sleep -s 0.7
 # downloading kinect sdk
-if ($KinectDriverStatus = 0){
-    if ($KinectStatus = 0){
-        echo "Downloading Kinect SDK 1.8 for Xbox 360 Kinect"
-        Invoke-WebRequest https://download.microsoft.com/download/E/1/D/E1DEC243-0389-4A23-87BF-F47DE869FC1A/KinectSDK-v1.8-Setup.exe -OutFile .\temp\kinectv1-sdk-1.8.exe
-    }elseif ($KinectStatus = 1){
-        echo "Downloading Kinect SDK 2.0 for Xbox One Kinect"
-        Invoke-WebRequest https://download.microsoft.com/download/F/2/D/F2D1012E-3BC6-49C5-B8B3-5ACFF58AF7B8/KinectSDK-v2.0_1409-Setup.exe -OutFile .\temp\kinectv2-sdk-2.0.exe
-    }
+if (($KinectStatus = 0) -And !(Test-Path "C:\Windows\System32\Kinect10.dll")){
+    echo "Downloading Kinect SDK 1.8 for Xbox 360 Kinect"
+    Invoke-WebRequest https://download.microsoft.com/download/E/1/D/E1DEC243-0389-4A23-87BF-F47DE869FC1A/KinectSDK-v1.8-Setup.exe -OutFile .\temp\kinectv1-sdk-1.8.exe
+    $KinectDriverInstall = 1
+}elseif (($KinectStatus = 1) -And !(Test-Path "C:\Windows\System32\Kinect20.dll")){
+    echo "Downloading Kinect SDK 2.0 for Xbox One Kinect"
+    Invoke-WebRequest https://download.microsoft.com/download/F/2/D/F2D1012E-3BC6-49C5-B8B3-5ACFF58AF7B8/KinectSDK-v2.0_1409-Setup.exe -OutFile .\temp\kinectv2-sdk-2.0.exe
+    $KinectDriverInstall = 1
 }else{
     echo "Kinect drivers are already installed, skipping download"
 }
@@ -183,11 +181,11 @@ Start-Sleep -s 0.6
 echo "Copying the SteamVR DLL Fix to the right folder"
 Copy-Item -Force .\temp\driver_00vrinputemulator.dll -Destination "$SteamDIR\steamapps\common\SteamVR\drivers\00vrinputemulator\bin\win64"
 Start-Sleep -s 0.8
-if (($KinectStatus = 0) -and ($KinectDriverStatus = 0)){
+if (($KinectStatus = 0) -and ($KinectDriverInstall = 1)){
     echo "Running Kinect SDK 1.8 Installer for Xbox 360 Kinect"
     echo "Installation will continue when the SDK installer is done"
     Start-Process .\temp\kinectv1-sdk-1.8.exe -NoNewWindow -Wait
-}elseif (($KinectStatus = 1) -and ($KinectDriverStatus = 0)){
+}elseif (($KinectStatus = 1) -and ($KinectDriverInstall = 1)){
     echo "Running Kinect SDK 2.0 Installer for Xbox One Kinect"
     echo "Installation will continue when the SDK installer is done"
     Start-Process .\temp\kinectv2-sdk-2.0.exe -NoNewWindow -Wait
