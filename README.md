@@ -19,7 +19,7 @@ Uhhh, just make a PR or an issue, fork or do whatever. I don't Git at all.
 ### How to build
 Clone the project either manually or from the console.
 Grab a copy of [PS2EXE](https://gallery.technet.microsoft.com/scriptcenter/PS2EXE-GUI-Convert-e7cb69d5) and in a Powershell window, run
-```.\PS2EXE.ps1 -requireAdmin -noError -x64 -iconFile .\installer-icon.ico -InputFile .\installer.ps1 -OutputFile .\installer.exe```
+```.\PS2EXE.ps1 -requireAdmin -noError -x64 -iconFile .\installer-icon.ico -InputFile .\installer.ps1 -OutputFile .\build\installer.exe```
 During debugging, you should probably remove `-noError` though.
 
 ## Thanks

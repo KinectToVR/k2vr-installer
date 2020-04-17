@@ -2,3 +2,4 @@ temp/
 PS2EXE.ps1
 PS2EXE.exe
 installer.exe
+build/
