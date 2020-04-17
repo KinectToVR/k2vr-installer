@@ -171,7 +171,7 @@ Start-Sleep -s 1
 echo "Installing Visual C++ Redistribuable 2017 x64"
 Start-Process .\temp\vcredist-2017-x64.exe /q -NoNewWindow -Wait
 Start-Sleep -s 1
-if (!(Test-Path "C:\Program Files\OpenVR-InputEmulator\")){
+if (!(Test-Path "C:\Program Files\OpenVR-InputEmulator\OpenVR-InputEmulatorOverlay.exe")){
     echo "Installing OpenVR-InputEmulator 1.3"
     Start-Process .\temp\ovrie-1.3.exe /S -NoNewWindow -Wait
 }else{
