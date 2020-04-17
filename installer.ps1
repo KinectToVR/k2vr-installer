@@ -34,7 +34,7 @@ if($SteamVRSettingsJson.LastKnown.HMDModel = "Oculus Rift CV1")      {$HMDStatus
 elseif($SteamVRSettingsJson.LastKnown.HMDModel = "Oculus Rift S")    {$HMDStatus = 1}
 elseif($SteamVRSettingsJson.LastKnown.HMDModel = "Oculus Quest")     {$HMDStatus = 2}
 elseif($SteamVRSettingsJson.LastKnown.HMDModel = "Valve Index")      {$HMDStatus = 3}
-elseif($SteamVRSettingsJson.LastKnown.HMDModel = "HTC Vive")         {$HMDStatus = 4}
+elseif($SteamVRSettingsJson.LastKnown.HMDModel = "Vive. MV")         {$HMDStatus = 4}
 elseif($SteamVRSettingsJson.LastKnown.HMDModel = "HTC Vive Pro")     {$HMDStatus = 5}
 elseif($SteamVRSettingsJson.LastKnown.HMDModel = "HTC Vive Cosmos")  {$HMDStatus = 6}
 elseif($SteamVRSettingsJson.LastKnown.HMDManufacturer = "WindowsMR") {$HMDStatus = 7}
