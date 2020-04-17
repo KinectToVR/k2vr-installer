@@ -44,10 +44,17 @@ echo "Current VR Headset: $HMDReadable"
 
 Start-Sleep -s 0.7
 
+# TODO
+# usb controller checks
+# disable steamvr home and enable steamvr advanced settings
+# prompt for OVRAS install
+# FETCH UPDATED BINDINGS
+
 # figure out what kinect model is plugged in and if it has drivers
 $KinectStatus = 0 # 0 = 360 1 = one
-$KinectDriverStatus = 0 # 0 = no drivers 1 = drivers
-if (Test-Path "C:\Program Files\Microsoft SDKs\Kinect"){$KinectDriverStatus = 1}
+$KinectDriverStatus = 0 # 0 = no drivers 1 = drivers for v1 2 = drivers for v2
+if (Test-Path "C:\Windows\System32\Kinect10.dll") {$KinectDriverStatus = 1}
+if (Test-Path "C:\Windows\System32\Kinect20.dll") {$KinectDriverStatus = 2}
 
 echo "Checking for Kinect model..."
 if (Get-PnpDevice -ErrorAction 'Ignore' -PresentOnly -FriendlyName 'Kinect for Windows Device'){
@@ -66,9 +73,9 @@ if (Get-PnpDevice -ErrorAction 'Ignore' -PresentOnly -FriendlyName 'Kinect for W
     echo "Xbox One Kinect (V2) Found!"
     $KinectStatus = 1
 }else{
-    echo "No Kinect found! Please plug in a Kinect and start again!"
+    echo "No device found! Please connect a Kinect sensor and start again!"
     $wshell = New-Object -ComObject Wscript.Shell
-    $wshell.Popup("No Kinect found! Please plug in a Kinect sensor and amke sure it's also connected to power and start again!  The installer will now exit.   If you're still having issues, join discord.gg/Mu28W4N", 0, "KinectToVR Installer",48)
+    $wshell.Popup("No device found! Please connect a Kinect sensor, verify it's connected to power and try again!  The installer will now exit.   If you're still having issues, join discord.gg/Mu28W4N", 0, "KinectToVR Installer",48)
     exit
 }
 Start-Sleep -s 0.7
@@ -163,14 +170,14 @@ Start-Sleep -s 3
 echo "Installing Visual C++ Redistribuable 2010 x64"
 Start-Process .\temp\vcredist-2010-x64.exe /q -NoNewWindow -Wait
 Start-Sleep -s 1
-echo "Downloading Visual C++ Redistribuable 2017 x64"
+echo "Installing Visual C++ Redistribuable 2017 x64"
 Start-Process .\temp\vcredist-2017-x64.exe /q -NoNewWindow -Wait
 Start-Sleep -s 1
 if (!(Test-Path "C:\Program Files\OpenVR-InputEmulator\")){
     echo "Installing OpenVR-InputEmulator 1.3"
     Start-Process .\temp\ovrie-1.3.exe /S -NoNewWindow -Wait
 }else{
-    echo "OVRIE is already installed, skipping install to avoid upgrade prompt"
+    echo "OpenVR-InputEmulator is already installed, skipping install to avoid upgrade prompt"
 }
 Start-Sleep -s 0.6
 echo "Copying the SteamVR DLL Fix to the right folder"
@@ -216,4 +223,4 @@ echo "Saved to SteamVR settings"
 
 # script end
 $wshell = New-Object -ComObject Wscript.Shell
-$wshell.Popup("Installation completed! If you need more help, read the instructions on the website or join discord.gg/Mu28W4N", 0, "KinectToVR Installer",48)
+$wshell.Popup("Installation completed! You can find KinectToVR in your start menu.  If you need more help, read the instructions on the website or join discord.gg/Mu28W4N", 0, "KinectToVR Installer",48)
