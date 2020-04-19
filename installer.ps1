@@ -237,6 +237,7 @@ $NewSteamVRSettings = $SteamVRSettings.Replace(
 Set-Content -Path "$SteamDIR\config\steamvr.vrsettings" -Value $NewSteamVRSettings
 # reload steamvr settings file
 $SteamVRSettings = Get-Content -Path "$SteamDIR\config\steamvr.vrsettings" -Raw
+echo "Enabling SteamVR Home if not already done"
 $NewSteamVRSettings = $SteamVRSettings.Replace(
 "`"showAdvancedSettings`" : false",
 "`"showAdvancedSettings`" : true")
@@ -244,6 +245,24 @@ Set-Content -Path "$SteamDIR\config\steamvr.vrsettings" -Value $NewSteamVRSettin
 Start-Sleep -s 0.7
 echo "Saved to SteamVR settings"
 
+# TODO
+# disable camera on vive/vivepro/viveroeye/index
+if ($HMDStatus -in 3..5){
+    # camera disable stuff
+    $NewSteamVRSettings = $SteamVRSettings.Replace(
+    "`"enableCamera`" : true",
+    "`"enableCamera`" : false")
+    Set-Content -Path "$SteamDIR\config\steamvr.vrsettings" -Value $NewSteamVRSettings
+    echo ""
+    $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkRed')
+    echo "Disabled camera for Vive/Vive Pro/Index!                   "
+    echo "This is required because of a bug in OpenVR-InputEmulator. "
+    echo "You can re-enable the camera in SteamVR settings           "
+    echo "if you disable inputEmulator, but KinectToVR won't work.   "
+    echo "You can find instructions to re-enable it on the website.  "
+    $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
+    echo ""
+}
 # script end
 $wshell = New-Object -ComObject Wscript.Shell
 $wshell.Popup("Installation completed! You can find KinectToVR in your start menu.  If you need more help, read the instructions on the website or join discord.gg/Mu28W4N", 0, "KinectToVR Installer",48)
