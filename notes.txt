@@ -21,3 +21,18 @@ vc redist c++ 2017 x64 direct dl
 https://download.visualstudio.microsoft.com/download/pr/11100230/15ccb3f02745c7b206ad10373cbca89b/VC_redist.x64.exe
 silent flag: /install /quiet /norestart
 
+working usb controllers for v2:
+AMD 3.0
+AMD 3.1
+Renesas
+Intel 3.0
+Intel 3.1
+ASMedia 3.1
+
+garbage usb controllers for v2:
+anything usb 2.0
+ASMedia 3.0
+AsusTEK 3.0
+
+controllers for v1:
+fucking anything as long as it's alone on the controller
