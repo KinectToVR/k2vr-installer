@@ -6,7 +6,7 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
  }
 }
 echo ""
-$Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkCyan')
+$Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkGreen')
 $Host.UI.RawUI.ForegroundColor = ($bckgrnd = 'White')
 echo "  __ __ _                 __ ______    _    ______     "
 echo "  / //_/(_)___  ___  _____/ //_  __/___| |  / / __ \   "
@@ -33,7 +33,7 @@ $SteamVRSettingsJSON = $SteamVRSettings | ConvertFrom-Json
 if($SteamVRSettingsJson.LastKnown.HMDModel -eq "Oculus Rift CV1")      {$HMDStatus = 0}
 elseif($SteamVRSettingsJson.LastKnown.HMDModel -eq "Oculus Rift S")    {$HMDStatus = 1}
 elseif($SteamVRSettingsJson.LastKnown.HMDModel -eq "Oculus Quest")     {$HMDStatus = 2}
-elseif($SteamVRSettingsJson.LastKnown.HMDModel -eq "Valve Index")      {$HMDStatus = 3}
+elseif($SteamVRSettingsJson.LastKnown.HMDModel -eq "Index")      {$HMDStatus = 3}
 elseif($SteamVRSettingsJson.LastKnown.HMDModel -eq "Vive. MV")         {$HMDStatus = 4}
 elseif($SteamVRSettingsJson.LastKnown.HMDModel -eq "VIVE_Pro MV")     {$HMDStatus = 5}
 elseif($SteamVRSettingsJson.LastKnown.HMDModel -eq "HTC Vive Cosmos")  {$HMDStatus = 6}
