@@ -8,12 +8,12 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 echo ""
 $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkGreen')
 $Host.UI.RawUI.ForegroundColor = ($bckgrnd = 'White')
-echo "  __ __ _                 __ ______    _    ______     "
-echo "  / //_/(_)___  ___  _____/ //_  __/___| |  / / __ \   "
-echo "  / ,<  / / __ \/ _ \/ ___/ __// / / __ \ | / / /_/ /  "
-echo "  / /| |/ / / / /  __/ /__/ /_ / / / /_/ / |/ / _, _/  "
-echo "  /_/ |_/_/_/ /_/\___/\___/\__//_/  \____/|___/_/ |_|  "
-echo "                                                       "
+echo "   _  ___                 _  _____  __     ______    "
+echo "  | |/ (_)_ __   ___  ___| ||_   _|_\ \   / /  _ \   "
+echo "  | ' /| | '_ \ / _ \/ __| __|| |/ _ \ \ / /| |_) |  "
+echo "  | . \| | | | |  __/ (__| |_ | | (_) \ V / |  _ <   "
+echo "  |_|\_\_|_| |_|\___|\___|\__||_|\___/ \_/  |_| \_\  "
+echo " Full-body tracking for Xbox 360 and Xbox One Kinect "
 echo ""
 $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
 Start-Sleep -s 0.8
