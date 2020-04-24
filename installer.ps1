@@ -19,6 +19,30 @@ echo ""
 $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
 Start-Sleep -s 0.8
 
+# https://stackoverflow.com/a/28482050/
+$steamVrMonitor = Get-Process vrmonitor -ErrorAction SilentlyContinue
+if ($steamVrMonitor) {
+  echo "SteamVR must be closed during the install process. Closing it now..."
+  $steamVrMonitor.CloseMainWindow() | Out-Null
+  Sleep 5
+  if (!$steamVrMonitor.HasExited) {
+    # When SteamVR is open with no headset detected,
+    # CloseMainWindow will only close the "headset not found" popup
+    # so we use Stop-Process to close it, if it's still open
+    $steamVrMonitor | Stop-Process
+    Sleep 3 # Give it time to actually close itself and vrserver
+  }
+}
+Remove-Variable steamVrMonitor
+# Apparently, SteamVR server can run without the monitor,
+# so we close that, if it's open aswell (monitor will complain if you close server first)
+$steamVrServer = Get-Process vrserver -ErrorAction SilentlyContinue
+if ($steamVrServer) {
+  # CloseMainWindow won't work here because it doesn't have a window
+  $steamVrServer | Stop-Process
+}
+Remove-Variable steamVrServer
+
 # preparation stage
 # find out which vr headset the user has
 # TODO: Pimax, Quest-VirtualDesktop and Quest-ALVR detection
@@ -266,4 +290,5 @@ if ($HMDStatus -in 3..5){
 }
 # script end
 $wshell = New-Object -ComObject Wscript.Shell
-$wshell.Popup("Installation completed! You can find KinectToVR in your start menu.  If you need more help, read the instructions on the website or join discord.gg/Mu28W4N", 0, "KinectToVR Installer",48)
+$wshell.Popup("Installation completed! You can find KinectToVR in your start menu.`nIf you need more help, read the instructions on the website or join discord.gg/Mu28W4N", 0, "KinectToVR Installer",48)
+$wshell.Popup("Rebooting your PC is recommended.", 0, "KinectToVR Installer",64)
