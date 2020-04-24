@@ -30,9 +30,18 @@ if ($steamVrMonitor) {
     # CloseMainWindow will only close the "headset not found" popup
     # so we use Stop-Process to close it, if it's still open
     $steamVrMonitor | Stop-Process
+    Sleep 3 # Give it time to actually close itself and vrserver
   }
 }
 Remove-Variable steamVrMonitor
+# Apparently, SteamVR server can run without the monitor,
+# so we close that, if it's open aswell (monitor will complain if you close server first)
+$steamVrServer = Get-Process vrserver -ErrorAction SilentlyContinue
+if ($steamVrServer) {
+  # CloseMainWindow won't work here because it doesn't have a window
+  $steamVrServer | Stop-Process
+}
+Remove-Variable steamVrServer
 
 # preparation stage
 # find out which vr headset the user has
