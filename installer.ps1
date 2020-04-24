@@ -19,6 +19,21 @@ echo ""
 $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
 Start-Sleep -s 0.8
 
+# https://stackoverflow.com/a/28482050/
+$steamVrMonitor = Get-Process vrmonitor -ErrorAction SilentlyContinue
+if ($steamVrMonitor) {
+  echo "SteamVR must be closed during the install process. Closing it now..."
+  $steamVrMonitor.CloseMainWindow() | Out-Null
+  Sleep 5
+  if (!$steamVrMonitor.HasExited) {
+    # When SteamVR is open with no headset detected,
+    # CloseMainWindow will only close the "headset not found" popup
+    # so we use Stop-Process to close it, if it's still open
+    $steamVrMonitor | Stop-Process
+  }
+}
+Remove-Variable steamVrMonitor
+
 # preparation stage
 # find out which vr headset the user has
 # TODO: Pimax, Quest-VirtualDesktop and Quest-ALVR detection
