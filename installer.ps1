@@ -281,4 +281,5 @@ if ($HMDStatus -in 3..5){
 }
 # script end
 $wshell = New-Object -ComObject Wscript.Shell
-$wshell.Popup("Installation completed! You can find KinectToVR in your start menu.  If you need more help, read the instructions on the website or join discord.gg/Mu28W4N", 0, "KinectToVR Installer",48)
+$wshell.Popup("Installation completed! You can find KinectToVR in your start menu.`nIf you need more help, read the instructions on the website or join discord.gg/Mu28W4N", 0, "KinectToVR Installer",48)
+$wshell.Popup("Rebooting your PC is recommended.", 0, "KinectToVR Installer",64)
