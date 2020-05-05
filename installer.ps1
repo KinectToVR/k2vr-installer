@@ -164,14 +164,13 @@ if ($KinectDriverInstall -eq 0){
 
 Start-Sleep -s 2
 # INSTALLING FOR REALS
-# if (!(Test-Path C:\KinectToVR\)){
+if (!(Test-Path C:\KinectToVR\)){
     echo "Extracting K2VR to the C drive (C:\KinectToVR)"
-    # .\temp\7zip\7za.exe x .\temp\k2vr-0.6.0r2.7z -aoa -oC:\ | Out-Null
-    # Rename-Item -Path "c:\KinectToVR-a0.6.0 Prime-time Test R2" -NewName "KinectToVR"
-    Expand-Archive -Path .\temp\k2vr-0.6.1.Zip -DestinationPath C:\KinectToVR\ -Force
-# } else{
-#     echo "KinectToVR is already present! Skipping extract"
-# }
+    .\temp\7zip\7za.exe x .\temp\k2vr-0.6.0r2.7z -aoa -oC:\ | Out-Null
+    Rename-Item -Path "c:\KinectToVR-a0.6.0 Prime-time Test R2" -NewName "KinectToVR"
+}else{
+    echo "KinectToVR is already present! Skipping extract"
+}
 Start-Sleep -s 3
 echo "Installing Visual C++ Redistribuable 2010 x64"
 Start-Process .\temp\vcredist-2010-x64.exe /q -NoNewWindow -Wait
