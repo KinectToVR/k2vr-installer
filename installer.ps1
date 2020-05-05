@@ -95,23 +95,22 @@ Start-Sleep -s 1
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 # download 7zip cli zip
-# if (!(Test-Path .\temp\7zip\)){
-#     echo "Downloading 7-Zip CLI"
-#     Invoke-WebRequest https://www.7-zip.org/a/7za920.zip -OutFile .\temp\7za920.zip
-#     echo "Extracting..."
-#     Expand-Archive -Path .\temp\7za920.Zip -DestinationPath .\temp\7zip\ -Force
-# }else{
-#     echo "7-Zip CLI is already present! Skipping download and extract"
-# }
-# lol this code isnt even needed anymore, big kek
+if (!(Test-Path .\temp\7zip\)){
+    echo "Downloading 7-Zip CLI"
+    Invoke-WebRequest https://www.7-zip.org/a/7za920.zip -OutFile .\temp\7za920.zip
+    echo "Extracting..."
+    Expand-Archive -Path .\temp\7za920.Zip -DestinationPath .\temp\7zip\ -Force
+}else{
+    echo "7-Zip CLI is already present! Skipping download and extract"
+}
 
 # download kinecttovr
 Start-Sleep -s 0.5
-if (!(Test-Path .\temp\k2vr-0.6.1.zip)){
-    echo "Downloading KinectToVR 0.6.1"
-    Invoke-WebRequest 'https://github.com/TripingPC/KinectToVR/releases/download/a0.6.1/installer-release-a061.zip' -OutFile .\temp\k2vr-0.6.1.zip
+if (!(Test-Path .\temp\k2vr-0.6.0r2.7z)){
+    echo "Downloading KinectToVR 0.6.0r2"
+    Invoke-WebRequest 'https://github.com/sharkyh20/KinectToVR/releases/download/a0.6.0/KinectToVR-a0.6.0.Prime-time.Test.R2.7z' -OutFile .\temp\k2vr-0.6.0r2.7z
 }else{
-    echo "KinectToVR 0.6.1 is already present! Skipping download"
+    echo "KinectToVR 0.6.0r2 is already present! Skipping download"
 }
 
 # download redists
