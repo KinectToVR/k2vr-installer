@@ -6,6 +6,10 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
   Exit
  }
 }
+
+$version = "1.3.3"
+$host.ui.RawUI.WindowTitle = "KinectToVR installer (Version $version)"
+
 echo ""
 $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkGreen')
 $Host.UI.RawUI.ForegroundColor = ($bckgrnd = 'White')
@@ -71,9 +75,9 @@ Start-Sleep -s 0.7
 
 # TODO
 # usb controller checks
-# disable steamvr home and enable steamvr advanced settings
 # prompt for OVRAS install
 # FETCH UPDATED BINDINGS
+# extract SDK MSIs for silent install https://github.com/Deledrius/KinectCam/blob/master/.github/workflows/build.yml#L35
 
 # figure out what kinect model is plugged in and if it has drivers
 $KinectStatus = 0 # 0 = 360 1 = one
