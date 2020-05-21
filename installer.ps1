@@ -50,7 +50,7 @@ Remove-Variable steamVrServer
 $HMDIndex = "rift-cv1","rift-s","quest","index","vive","vive-pro","vive-cosmos","windows-mr","quest-alvr","quest-vd","pimax","other"
 $HMDIndexReadable = "Oculus Rift CV1","Oculus Rift S","Oculus Quest","Valve Index","HTC Vive","HTC Vive Pro","HTC Vive Cosmos","Windows Mixed Reality","Oculus Quest (ALVR)","Oculus Quest (VirtualDesktop)","Pimax","Other/Unknown"
 $HMDStatus = 0
-$SteamDIR = (Get-Item HKCU:\Software\Valve\Steam).GetValue("SteamPath")
+$SteamDIR = (Get-Item HKLM:\SOFTWARE\WOW6432Node\Valve\Steam).GetValue("InstallPath")
 $SteamVRSettings = Get-Content -Path "$SteamDIR\config\steamvr.vrsettings" -Raw
 $NewSteamVRSettings
 $SteamVRSettingsJSON = $SteamVRSettings | ConvertFrom-Json
