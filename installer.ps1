@@ -171,13 +171,13 @@ if (!(Test-Path .\temp\driver_00vrinputemulator.dll)){
 Start-Sleep -s 0.7
 # downloading kinect sdk
 if ($KinectStatus -eq 0){ # xbox 360
-    if (!(Test-Path "C:\Windows\System32\kinect10.dll")){ # and no driver
+    if (!(Test-Path "C:\Program Files\Microsoft SDKs\Kinect\v1.8")){ # and no driver
     echo "Downloading Kinect SDK 1.8 for Xbox 360 Kinect"
     Invoke-WebRequest https://download.microsoft.com/download/E/1/D/E1DEC243-0389-4A23-87BF-F47DE869FC1A/KinectSDK-v1.8-Setup.exe -OutFile .\temp\kinectv1-sdk-1.8.exe
     $KinectDriverInstall = 1}
 }
 if ($KinectStatus -eq 1){ # xbox one
-    if (!(Test-Path "C:\Windows\System32\kinect20.dll")){ # and no driver
+    if (!(Test-Path "C:\Program Files\Microsoft SDKs\Kinect\v2.0_1409")){ # and no driver
     echo "Downloading Kinect SDK 2.0 for Xbox One Kinect"
     Invoke-WebRequest https://download.microsoft.com/download/F/2/D/F2D1012E-3BC6-49C5-B8B3-5ACFF58AF7B8/KinectSDK-v2.0_1409-Setup.exe -OutFile .\temp\kinectv2-sdk-2.0.exe
     $KinectDriverInstall = 1}
