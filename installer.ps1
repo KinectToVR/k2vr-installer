@@ -253,7 +253,7 @@ Start-Sleep -s 0.4
 $NewSteamVRSettings = $SteamVRSettings.Replace(
 "`"steamvr`" : {",
 "`"driver_00vrinputemulator`" : {`n      `"blocked_by_safe_mode`" : false`n   },`n   `"steamvr`" : {")
-echo "Safe mode blocked successfully!"
+echo "Safe mode blocked successfully for OpenVR-InputEmulator!"
 Set-Content -Path "$SteamDIR\config\steamvr.vrsettings" -Value $NewSteamVRSettings
 # reload steamvr settings file
 $SteamVRSettings = Get-Content -Path "$SteamDIR\config\steamvr.vrsettings" -Raw
@@ -264,7 +264,7 @@ $NewSteamVRSettings = $SteamVRSettings.Replace(
 Set-Content -Path "$SteamDIR\config\steamvr.vrsettings" -Value $NewSteamVRSettings
 # reload steamvr settings file
 $SteamVRSettings = Get-Content -Path "$SteamDIR\config\steamvr.vrsettings" -Raw
-echo "Enabling SteamVR Home if not already done"
+echo "Enabling SteamVR advanced settings (This is not OpenVR Advanced Settings!) if not already done"
 $NewSteamVRSettings = $SteamVRSettings.Replace(
 "`"showAdvancedSettings`" : false",
 "`"showAdvancedSettings`" : true")

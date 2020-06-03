@@ -21,3 +21,11 @@ vc redist c++ 2017 x64 direct dl
 https://download.visualstudio.microsoft.com/download/pr/11100230/15ccb3f02745c7b206ad10373cbca89b/VC_redist.x64.exe
 silent flag: /install /quiet /norestart
 
+kinect detection garbage
+gwmi Win32_USBControllerDevice |%{[wmi]($_.Dependent)} | Select -Property PNPDeviceID
+usb device ids
+
+['02B0','02BB','02AE'] ID array for 360 Kinect
+Main device (shows up driverless)
+audio device needs power to show up
+camera device signifies everything is working A-OK
