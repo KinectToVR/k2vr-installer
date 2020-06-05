@@ -29,3 +29,5 @@ usb device ids
 Main device (shows up driverless)
 audio device needs power to show up
 camera device signifies everything is working A-OK
+
+02C4 ID for xbone kinect
