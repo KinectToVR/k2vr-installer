@@ -163,6 +163,13 @@ Start-Sleep -s 1
 if (!(Test-Path ./temp/7zip/)){
     echo "Downloading 7-Zip CLI"
     Invoke-WebRequest https://www.7-zip.org/a/7za920.zip -OutFile ./temp/7za920.zip
+    if (!(Test-Path ./temp/7za920.zip)){
+        $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkRed')
+        echo "Could not download! Check your firewall? If this error persists, join discord.gg/YBQCRDG for help."
+        $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
+        Pause
+        Exit
+    }
     echo "Extracting..."
     Expand-Archive -Path ./temp/7za920.Zip -DestinationPath ./temp/7zip/ -Force
 }else{
@@ -174,6 +181,13 @@ Start-Sleep -s 0.5
 if (!(Test-Path ./temp/k2vr-0.6.0r2.7z)){
     echo "Downloading KinectToVR 0.6.0r2"
     Invoke-WebRequest 'https://github.com/sharkyh20/KinectToVR/releases/download/a0.6.0/KinectToVR-a0.6.0.Prime-time.Test.R2.7z' -OutFile ./temp/k2vr-0.6.0r2.7z
+    if (!(Test-Path ./temp/k2vr-0.6.0r2.7z)){
+        $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkRed')
+        echo "Could not download! Check your firewall? If this error persists, join discord.gg/YBQCRDG for help."
+        $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
+        Pause
+        Exit
+    }
 }else{
     echo "KinectToVR 0.6.0r2 is already present! Skipping download"
 }
@@ -183,6 +197,13 @@ Start-Sleep -s 0.5
 if (!(Test-Path ./temp/vcredist-2010-x64.exe)){
     echo "Downloading Visual C++ Redistribuable C++ 2010 x64"
     Invoke-WebRequest https://download.microsoft.com/download/3/2/2/3224B87F-CFA0-4E70-BDA3-3DE650EFEBA5/vcredist_x64.exe -OutFile ./temp/vcredist-2010-x64.exe
+    if (!(Test-Path ./temp/vcredist-2010-x64.exe)){
+        $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkRed')
+        echo "Could not download! Check your firewall? If this error persists, join discord.gg/YBQCRDG for help."
+        $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
+        Pause
+        Exit
+    }
 }else{
     echo "Visual C++ Redistribuable C++ 2010 x64 is already present! Skipping download"
 }
@@ -190,6 +211,13 @@ Start-Sleep -s 0.5
 if (!(Test-Path ./temp/vcredist-2017-x64.exe)){
     echo "Downloading Visual C++ Redistribuable C++ 2017 x64"
     Invoke-WebRequest https://download.visualstudio.microsoft.com/download/pr/11100230/15ccb3f02745c7b206ad10373cbca89b/VC_redist.x64.exe -OutFile ./temp/vcredist-2017-x64.exe
+    if (!(Test-Path ./temp/vcredist-2017-x64.exe)){
+        $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkRed')
+        echo "Could not download! Check your firewall? If this error persists, join discord.gg/YBQCRDG for help."
+        $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
+        Pause
+        Exit
+    }
 }else{
     echo "Visual C++ Redistribuable C++ 2017 x64 is already present! Skipping download"
 }
@@ -198,6 +226,13 @@ Start-Sleep -s 0.7
 if (!(Test-Path ./temp/ovrie-1.3.exe)){
     echo "Downloading OpenVR-InputEmulator 1.3"
     Invoke-WebRequest https://github.com/matzman666/OpenVR-InputEmulator/releases/download/v1.3/OpenVR-InputEmulator-v1.3.exe -OutFile ./temp/ovrie-1.3.exe
+    if (!(Test-Path ./temp/ovrie-1.3.exe)){
+        $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkRed')
+        echo "Could not download! Check your firewall? If this error persists, join discord.gg/YBQCRDG for help."
+        $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
+        Pause
+        Exit
+    }
 }else{
     echo "OpenVR-InputEmulator 1.3 is already present! Skipping download"
 }
@@ -206,6 +241,13 @@ Start-Sleep -s 0.6
 if (!(Test-Path ./temp/driver_00vrinputemulator.dll)){
     echo "Downloading the OpenVR-InputEmulator SteamVR Driver Fix"
     Invoke-WebRequest https://github.com/sharkyh20/OpenVR-InputEmulator/releases/download/SteamVR-Fix/driver_00vrinputemulator.dll -OutFile ./temp/driver_00vrinputemulator.dll
+    if (!(Test-Path ./temp/driver_00vrinputemulator.dll)){
+        $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkRed')
+        echo "Could not download! Check your firewall? If this error persists, join discord.gg/YBQCRDG for help."
+        $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
+        Pause
+        Exit
+    }
 }else{
     echo "The OpenVR-InputEmulator SteamVR Driver Fix is already present! Skipping download"
 }
@@ -216,12 +258,26 @@ if (!($arg) -or ($arg -eq 'v1') -or ($arg -eq 'v2')) {
         if (!(Test-Path "C:/Program Files/Microsoft SDKs/Kinect/v1.8")){ # and no driver
         echo "Downloading Kinect SDK 1.8 for Xbox 360 Kinect"
         Invoke-WebRequest https://download.microsoft.com/download/E/1/D/E1DEC243-0389-4A23-87BF-F47DE869FC1A/KinectSDK-v1.8-Setup.exe -OutFile ./temp/kinectv1-sdk-1.8.exe
+        if (!(Test-Path ./temp/kinectv1-sdk-1.8.exe)){
+            $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkRed')
+            echo "Could not download! Check your firewall? If this error persists, join discord.gg/YBQCRDG for help."
+            $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
+            Pause
+            Exit
+        }
         $KinectDriverInstall = 1}
     }
     if ($KinectStatus -eq 1){ # xbox one
         if (!(Test-Path "C:/Program Files/Microsoft SDKs/Kinect/v2.0_1409")){ # and no driver
         echo "Downloading Kinect SDK 2.0 for Xbox One Kinect"
         Invoke-WebRequest https://download.microsoft.com/download/F/2/D/F2D1012E-3BC6-49C5-B8B3-5ACFF58AF7B8/KinectSDK-v2.0_1409-Setup.exe -OutFile ./temp/kinectv2-sdk-2.0.exe
+        if (!(Test-Path ./temp/kinectv2-sdk-2.0.exe)){
+            $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkRed')
+            echo "Could not download! Check your firewall? If this error persists, join discord.gg/YBQCRDG for help."
+            $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
+            Pause
+            Exit
+        }
         $KinectDriverInstall = 1}
     }
     if ($KinectDriverInstall -eq 0){
