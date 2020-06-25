@@ -7,7 +7,7 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
  }
 }
 
-$version = "1.3.3"
+$version = "1.3.4"
 $host.ui.RawUI.WindowTitle = "KinectToVR installer (Version $version)"
 
 echo ""
@@ -56,6 +56,8 @@ Remove-Variable steamVrServer
 # find out which vr headset the user has
 # TODO: Pimax, Quest-VirtualDesktop and Quest-ALVR detection
 # TODO: Differentiate between Vive wands and Index controllers on Vive/Index/Pimax
+$arg=$args[0]
+
 $HMDIndex = "rift-cv1","rift-s","quest","index","vive","vive-pro","vive-cosmos","windows-mr","quest-alvr","quest-vd","pimax","other"
 $HMDIndexReadable = "Oculus Rift CV1","Oculus Rift S","Oculus Quest","Valve Index","HTC Vive","HTC Vive Pro","HTC Vive Cosmos","Windows Mixed Reality","Oculus Quest (ALVR)","Oculus Quest (VirtualDesktop)","Pimax","Other/Unknown"
 $HMDStatus = 0
@@ -91,29 +93,56 @@ Start-Sleep -s 0.7
 $KinectStatus = 0 # 0 = 360 1 = one
 $KinectDriverInstall = 0
 
-echo "Checking for Kinect model..."
-if (Get-PnpDevice -ErrorAction 'Ignore' -PresentOnly -FriendlyName 'Kinect for Windows Device'){
-    echo "Xbox 360 Kinect (V1) Found!"
-    $KinectStatus = 0
-}elseif (Get-PnpDevice -ErrorAction 'Ignore' -PresentOnly -FriendlyName 'Xbox NUI Motor'){
-    echo "Xbox 360 Kinect (V1) Found!"
-    $KinectStatus = 0
-}elseif (Get-PnpDevice -ErrorAction 'Ignore' -PresentOnly -FriendlyName 'Kinect USB Audio'){
-    echo "Xbox 360 Kinect (V1) Found!"
-    $KinectStatus = 0
-}elseif (Get-PnpDevice -ErrorAction 'Ignore' -PresentOnly -FriendlyName 'WDF KinectSensor Interface 0'){
-    echo "Xbox One Kinect (V2) Found!"
-    $KinectStatus = 1
-}elseif (Get-PnpDevice -ErrorAction 'Ignore' -PresentOnly -FriendlyName 'Xbox NUI Sensor'){
-    echo "Xbox One Kinect (V2) Found!"
-    $KinectStatus = 1
-}else{
-    echo "No device found! Please connect a Kinect sensor and start again!"
-    $wshell = New-Object -ComObject Wscript.Shell
-    $wshell.Popup("No device found! Please connect a Kinect sensor, verify it's connected to power and try again!  The installer will now exit.   If you're still having issues, join discord.gg/Mu28W4N", 0, "KinectToVR Installer",48)
-    exit
-}
 
+# if (Get-PnpDevice -ErrorAction 'Ignore' -PresentOnly -FriendlyName 'Kinect for Windows Device'){
+#     echo "Xbox 360 Kinect (V1) Found!"
+#     $KinectStatus = 0
+# }elseif (Get-PnpDevice -ErrorAction 'Ignore' -PresentOnly -FriendlyName 'Xbox NUI Motor'){
+#     echo "Xbox 360 Kinect (V1) Found!"
+#     $KinectStatus = 0
+# }elseif (Get-PnpDevice -ErrorAction 'Ignore' -PresentOnly -FriendlyName 'Kinect USB Audio'){
+#     echo "Xbox 360 Kinect (V1) Found!"
+#     $KinectStatus = 0
+# }elseif (Get-PnpDevice -ErrorAction 'Ignore' -PresentOnly -FriendlyName 'WDF KinectSensor Interface 0'){
+#     echo "Xbox One Kinect (V2) Found!"
+#     $KinectStatus = 1
+# }elseif (Get-PnpDevice -ErrorAction 'Ignore' -PresentOnly -FriendlyName 'Xbox NUI Sensor'){
+#     echo "Xbox One Kinect (V2) Found!"
+#     $KinectStatus = 1
+# }else{
+#     echo "No device found! Please connect a Kinect sensor and start again!"
+#     $wshell = New-Object -ComObject Wscript.Shell
+#     $wshell.Popup("No device found! Please connect a Kinect sensor, verify it's connected to power and try again!  The installer will now exit.   If you're still having issues, join discord.gg/Mu28W4N", 0, "KinectToVR Installer",48)
+#     exit
+# }
+
+# oh god new code
+if (!($arg)) {
+    echo "Checking for Kinect model..."
+    $kinectv1_presence = (([regex]::Matches((gwmi Win32_USBControllerDevice |%{[wmi]($_.Dependent)} | Select -Property PNPDeviceID | Out-String), "02B0" )) | Select -Property Success)
+    $kinectv2_presence = (([regex]::Matches((gwmi Win32_USBControllerDevice |%{[wmi]($_.Dependent)} | Select -Property PNPDeviceID | Out-String), "02C4" )) | Select -Property Success)
+    if ($kinectv1_presence){
+        echo "Xbox 360 Kinect (V1) Found!"
+        $KinectStatus = 0
+    }elseif ($kinectv2_presence) {
+        echo "Xbox One Kinect (V2) Found!"
+        $KinectStatus = 1
+    }else {
+        echo "No device found! Please connect a Kinect sensor and start again!"
+        $wshell = New-Object -ComObject Wscript.Shell
+        $wshell.Popup("No device found! Please connect a Kinect sensor, verify it's connected to power and try again!  The installer will now exit.   If you're still having issues, join discord.gg/YBQCRDG", 0, "KinectToVR Installer",48)
+        exit
+    }
+}elseif ($arg -eq 'v1') {
+    $KinectStatus = 0
+    echo "Xbox 360 Kinect (V1) Override Enabled"
+}elseif ($arg -eq 'v2') {
+    $KinectStatus = 1
+    echo "Xbox One Kinect (V2) Override Enabled"
+}elseif ($arg -eq 'psmove') {
+    $KinectStatus = 2
+    echo "PlayStation Move Override Enabled"
+}
 Start-Sleep -s 0.7
 
 # make new folder
@@ -182,20 +211,22 @@ if (!(Test-Path ./temp/driver_00vrinputemulator.dll)){
 }
 Start-Sleep -s 0.7
 # downloading kinect sdk
-if ($KinectStatus -eq 0){ # xbox 360
-    if (!(Test-Path "C:/Program Files/Microsoft SDKs/Kinect/v1.8")){ # and no driver
-    echo "Downloading Kinect SDK 1.8 for Xbox 360 Kinect"
-    Invoke-WebRequest https://download.microsoft.com/download/E/1/D/E1DEC243-0389-4A23-87BF-F47DE869FC1A/KinectSDK-v1.8-Setup.exe -OutFile ./temp/kinectv1-sdk-1.8.exe
-    $KinectDriverInstall = 1}
-}
-if ($KinectStatus -eq 1){ # xbox one
-    if (!(Test-Path "C:/Program Files/Microsoft SDKs/Kinect/v2.0_1409")){ # and no driver
-    echo "Downloading Kinect SDK 2.0 for Xbox One Kinect"
-    Invoke-WebRequest https://download.microsoft.com/download/F/2/D/F2D1012E-3BC6-49C5-B8B3-5ACFF58AF7B8/KinectSDK-v2.0_1409-Setup.exe -OutFile ./temp/kinectv2-sdk-2.0.exe
-    $KinectDriverInstall = 1}
-}
-if ($KinectDriverInstall -eq 0){
-    echo "Kinect drivers are already installed, skipping download"
+if (!($arg) -or ($arg -eq 'v1') -or ($arg -eq 'v2')) {
+    if ($KinectStatus -eq 0){ # xbox 360
+        if (!(Test-Path "C:/Program Files/Microsoft SDKs/Kinect/v1.8")){ # and no driver
+        echo "Downloading Kinect SDK 1.8 for Xbox 360 Kinect"
+        Invoke-WebRequest https://download.microsoft.com/download/E/1/D/E1DEC243-0389-4A23-87BF-F47DE869FC1A/KinectSDK-v1.8-Setup.exe -OutFile ./temp/kinectv1-sdk-1.8.exe
+        $KinectDriverInstall = 1}
+    }
+    if ($KinectStatus -eq 1){ # xbox one
+        if (!(Test-Path "C:/Program Files/Microsoft SDKs/Kinect/v2.0_1409")){ # and no driver
+        echo "Downloading Kinect SDK 2.0 for Xbox One Kinect"
+        Invoke-WebRequest https://download.microsoft.com/download/F/2/D/F2D1012E-3BC6-49C5-B8B3-5ACFF58AF7B8/KinectSDK-v2.0_1409-Setup.exe -OutFile ./temp/kinectv2-sdk-2.0.exe
+        $KinectDriverInstall = 1}
+    }
+    if ($KinectDriverInstall -eq 0){
+        echo "Kinect drivers are already installed, skipping download"
+    }
 }
 
 Start-Sleep -s 2
@@ -224,20 +255,22 @@ Start-Sleep -s 0.6
 echo "Copying the SteamVR DLL Fix to the right folder"
 Copy-Item -Force ./temp/driver_00vrinputemulator.dll -Destination "$SteamDIR/steamapps/common/SteamVR/drivers/00vrinputemulator/bin/win64"
 Start-Sleep -s 0.8
-if ($KinectDriverInstall -ne 0){
-    if ($KinectStatus -eq 0){
-        echo "Running Kinect SDK 1.8 Installer for Xbox 360 Kinect"
-        echo "Installation will continue when the SDK installer is done"
-        Start-Process ./temp/kinectv1-sdk-1.8.exe -NoNewWindow -Wait
+if (!($arg) -or ($arg -eq 'v1') -or ($arg -eq 'v2')) {
+    if ($KinectDriverInstall -ne 0){
+        if ($KinectStatus -eq 0){
+            echo "Running Kinect SDK 1.8 Installer for Xbox 360 Kinect"
+            echo "Installation will continue when the SDK installer is done"
+            Start-Process ./temp/kinectv1-sdk-1.8.exe -NoNewWindow -Wait
+        }
+        if ($KinectStatus -eq 1){
+            echo "Running Kinect SDK 2.0 Installer for Xbox One Kinect"
+            echo "Installation will continue when the SDK installer is done"
+            Start-Process ./temp/kinectv2-sdk-2.0.exe -NoNewWindow -Wait
+        }
     }
-    if ($KinectStatus -eq 1){
-        echo "Running Kinect SDK 2.0 Installer for Xbox One Kinect"
-        echo "Installation will continue when the SDK installer is done"
-        Start-Process ./temp/kinectv2-sdk-2.0.exe -NoNewWindow -Wait
+    if ($KinectDriverInstall -eq 0){
+        echo "Skipping Kinect SDK install since the drivers are already present"
     }
-}
-if ($KinectDriverInstall -eq 0){
-    echo "Skipping Kinect SDK install since the drivers are already present"
 }
 Start-Sleep -s 2
 # extra cleanup...
