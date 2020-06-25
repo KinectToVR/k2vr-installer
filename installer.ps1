@@ -7,7 +7,7 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
  }
 }
 
-$version = "1.4"
+$version = "1.4.1"
 $host.ui.RawUI.WindowTitle = "KinectToVR installer (Version $version)"
 
 echo ""
@@ -49,8 +49,6 @@ Remove-Variable steamVrServer
 
 # BIG TODO
 # ADD IMPROVED KINECT DETECTION AND PSMOVE DETECTION
-
-
 
 # preparation stage
 # find out which vr headset the user has
