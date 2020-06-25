@@ -31,3 +31,8 @@ audio device needs power to show up
 camera device signifies everything is working A-OK
 
 02C4 ID for xbone kinect
+
+seems in some cases, forcing kinect explorer to run will cause 360 kinect to behave and work in k2vr.
+
+
+if driver4vr was installed previously then removed, theres a chance vrchat will ignore all controller input, if thats the case, reinstall the entire game to fix it. (thanks Kernel Panic)
