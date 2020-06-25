@@ -7,7 +7,7 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
  }
 }
 
-$version = "1.3.4"
+$version = "1.3.5"
 $host.ui.RawUI.WindowTitle = "KinectToVR installer (Version $version)"
 
 echo ""
