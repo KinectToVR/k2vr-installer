@@ -11,7 +11,7 @@ I've been spending a concerning amount of time helping people set up KinectToVR 
 - More hand-holding for peculiar setups, notably Xbox One Kinect with Rift S or Lighthouse-based headsets.
 - Headset detection for Pimax, ALVR and VirtualDesktop.
 - ...*Maybe a GUI?*
-- Better Kinect detection that isn't based on device "FriendlyNames"
+- ~Better Kinect detection that isn't based on device "FriendlyNames"~
 - Localization
 
 ## How to contribute
