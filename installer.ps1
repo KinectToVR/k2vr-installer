@@ -287,7 +287,7 @@ Start-Sleep -s 2
 # INSTALLING FOR REALS
 if (!(Test-Path C:/KinectToVR/)){
     echo "Extracting K2VR to the C drive (C:/KinectToVR)"
-    ./temp/7zip/7za.exe x ./temp/k2vr-0.6.0r2.7z -aoa -oC:/ | Out-Null
+    ./temp/7zip/7za.exe x .\temp\k2vr-0.6.0r2.7z -aoa -oC:\ | Out-Null
     Rename-Item -Path "c:/KinectToVR-a0.6.0 Prime-time Test R2" -NewName "KinectToVR"
 }else{
     echo "KinectToVR is already present! Skipping extract"
