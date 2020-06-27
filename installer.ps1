@@ -126,7 +126,9 @@ if (!($arg)) {
         echo "Xbox One Kinect (V2) Found!"
         $KinectStatus = 1
     }else {
+        $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkRed')
         echo "No device found! Please connect a Kinect sensor and start again!"
+        $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
         $wshell = New-Object -ComObject Wscript.Shell
         $wshell.Popup("No device found! Please connect a Kinect sensor, verify it's connected to power and try again!  The installer will now exit.   If you're still having issues, join discord.gg/YBQCRDG", 0, "KinectToVR Installer",48)
         exit
