@@ -7,6 +7,8 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
  }
 }
 
+$ProgressPreference = 'SilentlyContinue'
+
 $version = "1.4.2"
 $host.ui.RawUI.WindowTitle = "KinectToVR installer (Version $version)"
 
@@ -14,14 +16,14 @@ echo ""
 $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkGreen')
 $Host.UI.RawUI.ForegroundColor = ($bckgrnd = 'White')
 echo "   _  ___                 _  _____  __     ______    "
-echo "  | |/ (_)_ __   ___  ___| ||_   _|_/ /   / /  _ /   "
-echo "  | ' /| | '_ / / _ // __| __|| |/ _ / / / /| |_) |  "
-echo "  | . /| | | | |  __/ (__| |_ | | (_) / V / |  _ <   "
-echo "  |_|/_/_|_| |_|/___|/___|/__||_|/___/ /_/  |_| /_/  "
+echo "  | |/ (_)_ __   ___  ___| ||_   _|_\ \   / /  _ \   "
+echo "  | ' /| | '_ \ / _ \/ __| __|| |/ _ \ \ / /| |_) |  "
+echo "  | . \| | | | |  __/ (__| |_ | | (_) \ V / |  _ <   "
+echo "  |_|\_\_|_| |_|\___|\___|\__||_|\___/ \_/  |_| \_\  "
 echo " Full-body tracking for Xbox 360 and Xbox One Kinect "
 echo ""
 $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
-Start-Sleep -s 0.8
+Start-Sleep -s 0.2
 
 # https://stackoverflow.com/a/28482050/
 $steamVrMonitor = Get-Process vrmonitor -ErrorAction SilentlyContinue
@@ -79,7 +81,7 @@ else{$HMDStatus = 11}
 $HMDReadable = $HMDIndexReadable[$HMDStatus]
 echo "Current VR Headset: $HMDReadable"
 
-Start-Sleep -s 0.7
+Start-Sleep -s 0.2
 
 # TODO
 # usb controller checks
@@ -117,9 +119,11 @@ $KinectDriverInstall = 0
 # oh god new code
 if (!($arg)) {
     echo "Checking for Kinect model..."
-    $kinectv1_presence = (([regex]::Matches((gwmi Win32_USBControllerDevice |%{[wmi]($_.Dependent)} | Select -Property PNPDeviceID | Out-String), "02B0" )) | Select -Property Success)
+    $kinectv1_presence_main = (([regex]::Matches((gwmi Win32_USBControllerDevice |%{[wmi]($_.Dependent)} | Select -Property PNPDeviceID | Out-String), "02B0" )) | Select -Property Success)
+    $kinectv1_presence_audio = (([regex]::Matches((gwmi Win32_USBControllerDevice |%{[wmi]($_.Dependent)} | Select -Property PNPDeviceID | Out-String), "02BB" )) | Select -Property Success)
+    $kinectv1_presence_camera = (([regex]::Matches((gwmi Win32_USBControllerDevice |%{[wmi]($_.Dependent)} | Select -Property PNPDeviceID | Out-String), "02AE" )) | Select -Property Success)
     $kinectv2_presence = (([regex]::Matches((gwmi Win32_USBControllerDevice |%{[wmi]($_.Dependent)} | Select -Property PNPDeviceID | Out-String), "02C4" )) | Select -Property Success)
-    if ($kinectv1_presence){
+    if ($kinectv1_presence_main -or $kinectv1_presence_audio -or $kinectv1_presence_camera){
         echo "Xbox 360 Kinect (V1) Found!"
         $KinectStatus = 0
     }elseif ($kinectv2_presence) {
@@ -131,6 +135,7 @@ if (!($arg)) {
         $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
         $wshell = New-Object -ComObject Wscript.Shell
         $wshell.Popup("No device found! Please connect a Kinect sensor, verify it's connected to power and try again!  The installer will now exit.   If you're still having issues, join discord.gg/YBQCRDG", 0, "KinectToVR Installer",48)
+        $wshell.Popup("If you want to help with better detection, send us your USB device Instance IDs and which Kinect model you are using on the KinectToVR Discord`n`nAlso, you can force the installer by adding 'v1' or 'v2' as a launch argument for Xbox 360 and Xbox One Kinect respectively.", 0, "KinectToVR Installer",48)
         exit
     }
 }elseif ($arg -eq 'v1') {
@@ -143,7 +148,7 @@ if (!($arg)) {
     $KinectStatus = 2
     echo "PlayStation Move Override Enabled"
 }
-Start-Sleep -s 0.7
+Start-Sleep -s 0.2
 
 # make new folder
 $CurrentPath = Get-Location
@@ -153,7 +158,7 @@ if (!(Test-Path ./temp)){
 }else{
     echo "A folder already exists at: $CurrentPath/temp/... using it"
 }
-Start-Sleep -s 1
+Start-Sleep -s 0.2
 # downloading things... TODO: verify downloads and add alternate mirrors
 
 # before we start, set PS to allow any type of TLS, older versions only allow 1.0 by default
@@ -177,7 +182,7 @@ if (!(Test-Path ./temp/7zip/)){
 }
 
 # download kinecttovr
-Start-Sleep -s 0.5
+Start-Sleep -s 0.2
 if (!(Test-Path ./temp/k2vr-0.6.0r2.7z)){
     echo "Downloading KinectToVR 0.6.0r2"
     Invoke-WebRequest 'https://github.com/sharkyh20/KinectToVR/releases/download/a0.6.0/KinectToVR-a0.6.0.Prime-time.Test.R2.7z' -OutFile ./temp/k2vr-0.6.0r2.7z
@@ -193,7 +198,7 @@ if (!(Test-Path ./temp/k2vr-0.6.0r2.7z)){
 }
 
 # download redists
-Start-Sleep -s 0.5
+Start-Sleep -s 0.2
 if (!(Test-Path ./temp/vcredist-2010-x64.exe)){
     echo "Downloading Visual C++ Redistribuable C++ 2010 x64"
     Invoke-WebRequest https://download.microsoft.com/download/3/2/2/3224B87F-CFA0-4E70-BDA3-3DE650EFEBA5/vcredist_x64.exe -OutFile ./temp/vcredist-2010-x64.exe
@@ -207,7 +212,7 @@ if (!(Test-Path ./temp/vcredist-2010-x64.exe)){
 }else{
     echo "Visual C++ Redistribuable C++ 2010 x64 is already present! Skipping download"
 }
-Start-Sleep -s 0.5
+Start-Sleep -s 0.2
 if (!(Test-Path ./temp/vcredist-2017-x64.exe)){
     echo "Downloading Visual C++ Redistribuable C++ 2017 x64"
     Invoke-WebRequest https://download.visualstudio.microsoft.com/download/pr/11100230/15ccb3f02745c7b206ad10373cbca89b/VC_redist.x64.exe -OutFile ./temp/vcredist-2017-x64.exe
@@ -221,7 +226,7 @@ if (!(Test-Path ./temp/vcredist-2017-x64.exe)){
 }else{
     echo "Visual C++ Redistribuable C++ 2017 x64 is already present! Skipping download"
 }
-Start-Sleep -s 0.7
+Start-Sleep -s 0.2
 # download openvr input emulator installer
 if (!(Test-Path ./temp/ovrie-1.3.exe)){
     echo "Downloading OpenVR-InputEmulator 1.3"
@@ -236,7 +241,7 @@ if (!(Test-Path ./temp/ovrie-1.3.exe)){
 }else{
     echo "OpenVR-InputEmulator 1.3 is already present! Skipping download"
 }
-Start-Sleep -s 0.6
+Start-Sleep -s 0.2
 # download openvr input emulator dll fix
 if (!(Test-Path ./temp/driver_00vrinputemulator.dll)){
     echo "Downloading the OpenVR-InputEmulator SteamVR Driver Fix"
@@ -251,7 +256,7 @@ if (!(Test-Path ./temp/driver_00vrinputemulator.dll)){
 }else{
     echo "The OpenVR-InputEmulator SteamVR Driver Fix is already present! Skipping download"
 }
-Start-Sleep -s 0.7
+Start-Sleep -s 0.2
 # downloading kinect sdk
 if (!($arg) -or ($arg -eq 'v1') -or ($arg -eq 'v2')) {
     if ($KinectStatus -eq 0){ # xbox 360
@@ -285,7 +290,7 @@ if (!($arg) -or ($arg -eq 'v1') -or ($arg -eq 'v2')) {
     }
 }
 
-Start-Sleep -s 2
+Start-Sleep -s 0.2
 # INSTALLING FOR REALS
 if (!(Test-Path C:/KinectToVR/)){
     echo "Extracting K2VR to the C drive (C:/KinectToVR)"
@@ -307,10 +312,10 @@ if (!(Test-Path "C:/Program Files/OpenVR-InputEmulator/OpenVR-InputEmulatorOverl
 }else{
     echo "OpenVR-InputEmulator is already installed, skipping install to avoid upgrade prompt"
 }
-Start-Sleep -s 0.6
+Start-Sleep -s 0.2
 echo "Copying the SteamVR DLL Fix to the right folder"
 Copy-Item -Force ./temp/driver_00vrinputemulator.dll -Destination "$SteamDIR/steamapps/common/SteamVR/drivers/00vrinputemulator/bin/win64"
-Start-Sleep -s 0.8
+Start-Sleep -s 0.2
 if (!($arg) -or ($arg -eq 'v1') -or ($arg -eq 'v2')) {
     if ($KinectDriverInstall -ne 0){
         if ($KinectStatus -eq 0){
@@ -328,7 +333,7 @@ if (!($arg) -or ($arg -eq 'v1') -or ($arg -eq 'v2')) {
         echo "Skipping Kinect SDK install since the drivers are already present"
     }
 }
-Start-Sleep -s 2
+Start-Sleep -s 0.2
 # extra cleanup...
 echo "Creating Start Menu entry for KinectToVR..."
 echo "Downloading icon into the K2VR folder"
@@ -346,7 +351,7 @@ Start-Sleep -s 1
 # because PS' wrapper around Newtonsoft doesn't allow to change the tab length
 # making this string replace hack kind of the only slightly sane method
 echo "Force-enabling OpenVR-InputEmulator"
-Start-Sleep -s 0.4
+Start-Sleep -s 0.2
 $NewSteamVRSettings = $SteamVRSettings.Replace(
 "`"steamvr`" : {",
 "`"driver_00vrinputemulator`" : {`n      `"blocked_by_safe_mode`" : false`n   },`n   `"steamvr`" : {")
@@ -389,5 +394,5 @@ if ($HMDStatus -in 3..5){
 }
 # script end
 $wshell = New-Object -ComObject Wscript.Shell
-$wshell.Popup("Installation completed! You can find KinectToVR in your start menu.`nIf you need more help, read the instructions on the website or join discord.gg/Mu28W4N", 0, "KinectToVR Installer",48)
+$wshell.Popup("Installation completed! You can find KinectToVR in the start menu.`n`nJoin discord.gg/Mu28W4N for help and updates.`n`nIf this is your first time, yoyu should watch the calibration tutorial on k2vr.tech", 0, "KinectToVR Installer",32)
 $wshell.Popup("Rebooting your PC is recommended.", 0, "KinectToVR Installer",64)
