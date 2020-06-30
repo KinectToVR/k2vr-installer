@@ -58,6 +58,9 @@ Remove-Variable steamVrServer
 # TODO: Differentiate between Vive wands and Index controllers on Vive/Index/Pimax
 $arg=$args[0]
 
+md5 = ["2FAC454A90AE96021F4FFC607D4C00F8","A4BEFBE4A2D5BCA5C52F4542A15BEC89","C76CDA20DD2D939101E39B95DD30CF1F","479010273D25BEAB4868D57FFF907D50","09A95EA4BDB9A619828E6D13AC486962","2E742FDF0B00293CF55EEB9C5860EAC8","630D75210B325A280C3352F879297ED5","77C0F604585FB429C722BE111CA30C37"]
+# in order: 7zip tools, ovrie dll, kinecttovr, sdk 1.8, sdk 2.0, ovrie installer, vcredist 2010, vcredist 2017
+
 $HMDIndex = "rift-cv1","rift-s","quest","index","vive","vive-pro","vive-cosmos","windows-mr","quest-alvr","quest-vd","pimax","other"
 $HMDIndexReadable = "Oculus Rift CV1","Oculus Rift S","Oculus Quest","Valve Index","HTC Vive","HTC Vive Pro","HTC Vive Cosmos","Windows Mixed Reality","Oculus Quest (ALVR)","Oculus Quest (VirtualDesktop)","Pimax","Other/Unknown"
 $HMDStatus = 0
@@ -166,7 +169,7 @@ Start-Sleep -s 0.2
 
 # download 7zip cli zip
 if (!(Test-Path ./temp/7zip/)){
-    echo "Downloading 7-Zip CLI"
+    echo "Downloading 7-Zip tools"
     Invoke-WebRequest https://www.7-zip.org/a/7za920.zip -OutFile ./temp/7za920.zip
     if (!(Test-Path ./temp/7za920.zip)){
         $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkRed')
@@ -178,7 +181,7 @@ if (!(Test-Path ./temp/7zip/)){
     echo "Extracting..."
     Expand-Archive -Path ./temp/7za920.Zip -DestinationPath ./temp/7zip/ -Force
 }else{
-    echo "7-Zip CLI is already present! Skipping download and extract"
+    echo "7-Zip tools already present! Skipping download"
 }
 
 # download kinecttovr
