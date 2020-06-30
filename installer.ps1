@@ -9,7 +9,7 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 
 $ProgressPreference = 'SilentlyContinue'
 
-$version = "1.4.2"
+$version = "1.4.4"
 $host.ui.RawUI.WindowTitle = "KinectToVR installer (Version $version)"
 
 echo ""
