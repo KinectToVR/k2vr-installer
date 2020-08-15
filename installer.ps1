@@ -8,8 +8,6 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 }
 
 $ProgressPreference = 'SilentlyContinue'
-
-$version = "1.4.4"
 $host.ui.RawUI.WindowTitle = "KinectToVR installer (Version $version)"
 
 echo ""
@@ -24,6 +22,15 @@ echo " Full-body tracking for Xbox 360 and Xbox One Kinect "
 echo ""
 $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
 Start-Sleep -s 0.2
+
+$version = "1.4.2"
+# find newest github release
+$latest_version = ((((Invoke-WebRequest 'https://api.github.com/repos/tripingpc/k2vr-installer/releases' | ConvertFrom-Json)[0] | Select tag_name) | Out-String).Split("`n")[3])
+
+if (($version -replace '[\W]', '') -lt ($latest_version -replace '[\W]', '')){
+    $wshell = New-Object -ComObject Wscript.Shell
+    $wshell.Popup("It seems you're using an outdated version of KinectToVR Installer!`n`nThis version: $($version)`n`nNewest: $($latest_version)`n`nYou should consider downloading the newest version if needed.  If you're still having issues, join discord.gg/YBQCRDG", 0, "KinectToVR Installer",48)
+}
 
 # https://stackoverflow.com/a/28482050/
 $steamVrMonitor = Get-Process vrmonitor -ErrorAction SilentlyContinue
@@ -58,8 +65,31 @@ Remove-Variable steamVrServer
 # TODO: Differentiate between Vive wands and Index controllers on Vive/Index/Pimax
 $arg=$args[0]
 
-md5 = ["2FAC454A90AE96021F4FFC607D4C00F8","A4BEFBE4A2D5BCA5C52F4542A15BEC89","C76CDA20DD2D939101E39B95DD30CF1F","479010273D25BEAB4868D57FFF907D50","09A95EA4BDB9A619828E6D13AC486962","2E742FDF0B00293CF55EEB9C5860EAC8","630D75210B325A280C3352F879297ED5","77C0F604585FB429C722BE111CA30C37"]
-# in order: 7zip tools, ovrie dll, kinecttovr, sdk 1.8, sdk 2.0, ovrie installer, vcredist 2010, vcredist 2017
+function ConvertFrom-Xml($XML) {
+    foreach ($Object in @($XML.Objects.Object)) {
+        $PSObject = New-Object PSObject
+        foreach ($Property in @($Object.Property)) {
+            $PSObject | Add-Member NoteProperty $Property.Name $Property.InnerText
+        }
+        $PSObject
+    }
+}
+
+$md5 = @{
+    _7zip = [""]"2FAC454A90AE96021F4FFC607D4C00F8";
+    ovrie = "2E742FDF0B00293CF55EEB9C5860EAC8";
+    k2vr = "C76CDA20DD2D939101E39B95DD30CF1F";
+    sdk18 = "479010273D25BEAB4868D57FFF907D50";
+    sdk20 = "09A95EA4BDB9A619828E6D13AC486962";
+    ovriedll = "A4BEFBE4A2D5BCA5C52F4542A15BEC89";
+    vcredist10 = "630D75210B325A280C3352F879297ED5";
+    vcredist17 = "77C0F604585FB429C722BE111CA30C37"
+}
+
+function check_md5($var, $filename){
+    echo "Checking MD5 for $filename..."
+    
+}
 
 $HMDIndex = "rift-cv1","rift-s","quest","index","vive","vive-pro","vive-cosmos","windows-mr","quest-alvr","quest-vd","pimax","other"
 $HMDIndexReadable = "Oculus Rift CV1","Oculus Rift S","Oculus Quest","Valve Index","HTC Vive","HTC Vive Pro","HTC Vive Cosmos","Windows Mixed Reality","Oculus Quest (ALVR)","Oculus Quest (VirtualDesktop)","Pimax","Other/Unknown"
@@ -322,6 +352,26 @@ Start-Sleep -s 0.2
 if (!($arg) -or ($arg -eq 'v1') -or ($arg -eq 'v2')) {
     if ($KinectDriverInstall -ne 0){
         if ($KinectStatus -eq 0){
+            # IF YOU INSTALL 2.0 WITH A V1 YOURE WORSE THAN DEAD
+            if ((Test-Path "C:/Program Files/Microsoft SDKs/Kinect/v2.0_1409") -or Test-Path "C:/Program Files/Microsoft SDKs/Kinect/v2.0_1905"){
+                echo ""
+                $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'DarkRed')
+                echo "Xbox 360 Kinect is incompatible with the "
+                echo "Kinect for Windows SDK/Runtime 2.0.      "
+                echo "Please uninstall it before continuing.   "
+                echo "If you actually own and use an Xbox One  "
+                echo "Kinect on your PC, we're sorry for the   "
+                echo "inconvenience.                           "
+                echo "                                         "
+                echo "       (And why aren't you using that for"
+                echo "                      KinectToVR anyway?)"
+                $Host.UI.RawUI.BackgroundColor = ($bckgrnd = 'Black')
+                echo ""
+                # Get-WmiObject -Class Win32_Product | Where-Object{$_.Name -eq "Kinect for Windows SDK v2.0_1409"}.Uninstall()
+                echo "The installer will now exit..."
+                pause
+                exit
+            }
             echo "Running Kinect SDK 1.8 Installer for Xbox 360 Kinect"
             echo "Installation will continue when the SDK installer is done"
             Start-Process ./temp/kinectv1-sdk-1.8.exe -NoNewWindow -Wait
